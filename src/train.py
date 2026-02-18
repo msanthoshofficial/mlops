@@ -58,10 +58,17 @@ def train_model():
         mlflow.log_metric("val_accuracy", history.history['val_accuracy'][-1])
 
         # Save Model
-        model.save("model.h5")
+        # We model.save("model.h5") # Redundant if we rename best_model
+        
+        # Rename best_model.h5 to model.h5 to serve as the production model
+        if os.path.exists("best_model.h5"):
+            if os.path.exists("model.h5"):
+                os.remove("model.h5")
+            os.rename("best_model.h5", "model.h5")
+            
         mlflow.log_artifact("model.h5")
         
-        print("Training complete. Model saved to model.h5")
+        print("Training complete. Best model saved to model.h5")
 
 if __name__ == "__main__":
     train_model()

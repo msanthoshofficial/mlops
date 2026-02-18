@@ -26,19 +26,19 @@ c:/dev/mlops
 ### Application Flow
 ```mermaid
 graph TD
-    User[User] -->|POST Image| API[FastAPI /predict]
-    API --> Preprocess[Preprocess Image (MobileNetV2)]
+    User[User] -->|POST Image| API["FastAPI /predict"]
+    API --> Preprocess["Preprocess Image (MobileNetV2)"]
     Preprocess --> Model[TensorFlow Model]
     Model -->|Prediction| API
     API -->|JSON Response| User
-    API -->|Metrics| Prometheus[Prometheus /metrics]
+    API -->|Metrics| Prometheus["Prometheus /metrics"]
 ```
 
 ### CI/CD Pipeline
 ```mermaid
 graph LR
     Dev[Developer] -->|Push Code| GitHub[GitHub Repository]
-    GitHub -->|Trigger| CI[CI Pipeline (.github/workflows/pipeline.yml)]
+    GitHub -->|Trigger| CI["CI Pipeline (.github/workflows/pipeline.yml)"]
     subgraph CI Functions
         Checkout[Checkout Code + LFS] --> Setup[Setup Python]
         Setup --> Install[Install Dependencies]
@@ -135,6 +135,11 @@ graph LR
 - **Secrets Required**:
   - `DOCKER_USERNAME`
   - `DOCKER_PASSWORD`
+- **Run the container**:
+
+  ```bash
+  docker run -p 8000:8000 msanthoshofficial/cat-dog-classifier:latest
+  ```
 
 ## Monitoring
 
