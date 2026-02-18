@@ -23,7 +23,7 @@ def train_model():
         # Parameters
         img_size = (224, 224)
         batch_size = 32
-        epochs = 1
+        epochs = 2
         learning_rate = 1e-4
 
         mlflow.log_param("img_size", img_size)
