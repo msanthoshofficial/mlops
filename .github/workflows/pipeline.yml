@@ -42,42 +42,7 @@ jobs:
         name: model-artifact
         path: model.h5
 
-  docker-build:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        lfs: true
-
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.11"
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-    # Create dummy model for tests if not present (although LFS should handle it, good for PR from forks maybe?)
-    # Actually, we rely on LFS.
-    
-    - name: Run Tests
-      # We don't have unit tests yet, but creating a placeholder or running smoke test against running app?
-      # Usually unit tests run here. Let's list files to verify LFS download.
-      run: |
-        ls -lh model.h5 || echo "model.h5 not found"
-        # pytest # Uncomment when unit tests exist
-
-    - name: Upload Model Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: model-artifact
-        path: model.h5
 
   docker-build:
     needs: build-and-test

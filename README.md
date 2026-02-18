@@ -11,14 +11,42 @@ c:/dev/mlops
 ├── src/                  # Source code for training
 │   ├── train.py
 │   ├── model.py
-│   ├── preprocess.py
-├── tests/                # Unit tests
-├── Dockerfile            # Container definition
-├── docker-compose.yml    # Deployment configuration
-├── requirements.txt      # Dependencies
-├── smoke_test.py         # Post-deployment verification
-├── simulate_traffic.py   # Traffic generation for monitoring
-└── README.md             # Documentation
+## Tech Stack
+- **Language**: Python 3.11
+- **Web Framework**: FastAPI
+- **ML Framework**: TensorFlow / Keras (MobileNetV2)
+- **Experiment Tracking**: MLflow
+- **Containerization**: Docker
+- **CI/CD**: GitHub Actions
+- **Monitoring**: Prometheus
+- **Version Control**: Git + Git LFS
+
+## Architecture
+
+### Application Flow
+```mermaid
+graph TD
+    User[User] -->|POST Image| API[FastAPI /predict]
+    API --> Preprocess[Preprocess Image (MobileNetV2)]
+    Preprocess --> Model[TensorFlow Model]
+    Model -->|Prediction| API
+    API -->|JSON Response| User
+    API -->|Metrics| Prometheus[Prometheus /metrics]
+```
+
+### CI/CD Pipeline
+```mermaid
+graph LR
+    Dev[Developer] -->|Push Code| GitHub[GitHub Repository]
+    GitHub -->|Trigger| CI[CI Pipeline (.github/workflows/pipeline.yml)]
+    subgraph CI Functions
+        Checkout[Checkout Code + LFS] --> Setup[Setup Python]
+        Setup --> Install[Install Dependencies]
+        Install --> Test[Run Tests]
+        Test --> Build[Build Docker Image]
+        Build --> Push[Push to Docker Hub]
+    end
+    Push -->|Deploy| Server[Production Server]
 ```
 
 ## Prerequisites
@@ -93,7 +121,7 @@ c:/dev/mlops
    python simulate_traffic.py
    ```
 
-## CI/CD Pipeline
+## CI/CD Configuration
 
 - **Workflow**: `.github/workflows/pipeline.yml`
 - **CI**: 
