@@ -53,17 +53,58 @@ jobs:
       with:
         lfs: true
 
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    # Create dummy model for tests if not present (although LFS should handle it, good for PR from forks maybe?)
+    # Actually, we rely on LFS.
+    
+    - name: Run Tests
+      # We don't have unit tests yet, but creating a placeholder or running smoke test against running app?
+      # Usually unit tests run here. Let's list files to verify LFS download.
+      run: |
+        ls -lh model.h5 || echo "model.h5 not found"
+        # pytest # Uncomment when unit tests exist
+
+    - name: Upload Model Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: model-artifact
+        path: model.h5
+
+  docker-build:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        lfs: true
+
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-      # Only login if secrets are available, otherwise skip push
-      if: "${{ env.DOCKER_USERNAME != '' }}"
+      # Only login if secrets are available
+      if: env.DOCKER_USERNAME != ''
 
     - name: Build and Push Docker image
       uses: docker/build-push-action@v5
       with:
         context: .
-        push: ${{ secrets.DOCKER_USERNAME != '' }}
-        tags: ${{ secrets.DOCKER_USERNAME }}/cat-dog-classifier:latest
+        push: ${{ env.DOCKER_USERNAME != '' }}
+        tags: ${{ env.DOCKER_USERNAME != '' && format('{0}/cat-dog-classifier:latest', env.DOCKER_USERNAME) || 'cat-dog-classifier:latest' }}

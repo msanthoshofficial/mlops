@@ -115,3 +115,8 @@ c:/dev/mlops
   - Request Count
   - Latency
   - Custom business metrics (via `prometheus-fastapi-instrumentator`)
+  
+  **To view metrics:**
+  1. Open a browser and navigate to `http://localhost:8000/metrics`.
+  2. You will see raw metrics. For visualization, you would typically configure a Prometheus server to scrape this endpoint and use Grafana for dashboards.
+  3. Simple verification: Refresh the page after making predictions to see counters increase.
