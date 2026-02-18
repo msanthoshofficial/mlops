@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  mlops-api:
+    build: .
+    image: cat-dog-classifier:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./model.h5:/app/model.h5
+    environment:
+      - ENV=production
+    restart: always

@@ -1,0 +1,8 @@
+tensorflow
+mlflow
+fastapi
+uvicorn
+dvc
+pytest
+requests
+Pillow

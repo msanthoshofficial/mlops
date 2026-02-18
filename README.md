@@ -1,0 +1,105 @@
+# MLOps Assignment 2 - Cats vs Dogs Classification
+
+This project implements an end-to-end MLOps pipeline for a binary image classification model (Cats vs Dogs).
+
+## Project Structure
+```
+c:/dev/mlops
+├── .github/workflows/    # CI/CD pipelines
+├── app/                  # FastAPI inference service
+│   ├── main.py
+├── src/                  # Source code for training
+│   ├── train.py
+│   ├── model.py
+│   ├── preprocess.py
+├── tests/                # Unit tests
+├── Dockerfile            # Container definition
+├── docker-compose.yml    # Deployment configuration
+├── requirements.txt      # Dependencies
+├── smoke_test.py         # Post-deployment verification
+├── simulate_traffic.py   # Traffic generation for monitoring
+└── README.md             # Documentation
+```
+
+## Prerequisites
+
+- Python 3.9+
+- Docker & Docker Compose
+- Git
+- Dataset: `PetImages` (Cats & Dogs) placed in `Dataset/` folder.
+
+## Setup & Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone <repo-url>
+   cd mlops
+   ```
+
+2. **Create a virtual environment:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Prepare Dataset:**
+   Ensure your dataset is structure as follows:
+   ```
+   c:/dev/mlops/Dataset/PetImages/
+       ├── Cat/
+       └── Dog/
+   ```
+
+## Model Development
+
+1. **Train the model:**
+   ```bash
+   python -m src.train
+   ```
+   This will train the CNN model and save it as `model.h5`. MLflow logs will be saved in `mlruns/`.
+
+2. **Run Tests:**
+   ```bash
+   # Run unit tests
+   python -m pytest
+   ```
+
+## Model Serving
+
+1. **Start the API locally:**
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+   - Swagger UI: `http://localhost:8000/docs`
+   - Metrics: `http://localhost:8000/metrics`
+
+2. **Docker Deployment:**
+   ```bash
+   # Build and Run using Docker Compose
+   docker-compose up --build -d
+   ```
+
+3. **Verify Deployment:**
+   ```bash
+   # Run smoke tests
+   python smoke_test.py
+   
+   # Simulate traffic for monitoring
+   python simulate_traffic.py
+   ```
+
+## CI/CD Pipeline
+
+The project uses GitHub Actions (`.github/workflows/ci.yml`) for:
+- **CI**: Runs unit tests and builds Docker image on push to `master`.
+- **CD**: Deployment steps can be enabled by configuring Docker Hub credentials (`DOCKER_USERNAME`, `DOCKER_PASSWORD`) in GitHub Secrets.
+
+## Monitoring
+
+- **Application Logs**: Standard output logs for every request.
+- **Metrics**: `/metrics` endpoint exposes Request Count and Average Latency.
