@@ -21,5 +21,4 @@ Dataset/
 mlruns/
 *.pkl
 __pycache__/
-/model.h5
 DEMO_SCRIPT.md
