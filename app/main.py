@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.responses import RedirectResponse
 import tensorflow as tf
 import numpy as np
 from PIL import Image
@@ -45,6 +46,10 @@ async def add_process_time_header(request, call_next):
     
     response.headers["X-Process-Time"] = str(process_time)
     return response
+
+@app.get("/", include_in_schema=False)
+async def redirect_to_docs():
+    return RedirectResponse(url="/docs")
 
 @app.get("/metrics")
 def get_metrics():
